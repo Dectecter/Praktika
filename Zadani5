@@ -1,0 +1,25 @@
+#include <stdio.h>
+
+int main(void)
+{
+    int char_num, sum;
+    char word[80];
+    char mas[128] = { 0 };
+    fgets(word, 80, stdin);
+    for (int i = 0; word[i] != '\0'; i++) {
+        char_num = word[i];
+        mas[char_num] += 1;
+    }
+
+    for (int i = 0; word[i] != '\0'; i++) {
+        char_num = word[i];
+        sum = mas[char_num];
+        if (sum == 0 || char_num == 32 || char_num == 10) 
+            continue;
+        else {
+            printf("%c - %i\n", char_num, sum);
+            mas[char_num] = 0;
+        }
+    }
+    return 0;
+}
