@@ -1,0 +1,58 @@
+#include <SDL.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 600
+
+void drawRandomSectors(SDL_Renderer* renderer) {
+    srand(time(NULL));
+
+    for (int i = 0; i < 100; i++) {
+        int x = rand() % SCREEN_WIDTH;
+        int y = rand() % SCREEN_HEIGHT;
+        int radius = rand() % 100 + 20;
+        int startAngle = rand() % 360;
+        int endAngle = rand() % 360;
+        SDL_SetRenderDrawColor(renderer, rand() % 256, rand() % 256, rand() % 256, 255);
+        SDL_RenderDrawLine(renderer, x, y, x + radius * cos(startAngle * M_PI / 180), y + radius * sin(startAngle * M_PI / 180));
+        SDL_RenderDrawLine(renderer, x, y, x + radius * cos(endAngle * M_PI / 180), y + radius * sin(endAngle * M_PI / 180));
+        SDL_RenderDrawLine(renderer, x, y, x + radius * cos((startAngle + endAngle) / 2 * M_PI / 180), y + radius * sin((startAngle + endAngle) / 2 * M_PI / 180));
+    }
+}
+
+int main(int argc, char* args[]) {
+    SDL_Window* window = NULL;
+    SDL_Renderer* renderer = NULL;
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+        printf("SDL не удалось выполнить инициализацию! SDL_Error: %s\n", SDL_GetError());
+    }
+    else {
+        window = SDL_CreateWindow("Random Colorful Circles", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+        if (window == NULL) {
+            printf("Не удалось создать окно!SDL_Error: %s\n", SDL_GetError());
+        }
+        else {
+            renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+            if (renderer == NULL) {
+                printf("Не удалось создать средство визуализации! SDL_Error: %s\n", SDL_GetError());
+            }
+            else {
+                SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+                SDL_RenderClear(renderer);
+
+                drawRandomSectors(renderer);
+
+                SDL_RenderPresent(renderer);
+                SDL_Delay(5000);
+            }
+        }
+    }
+
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
+
+    return 0;
+}
